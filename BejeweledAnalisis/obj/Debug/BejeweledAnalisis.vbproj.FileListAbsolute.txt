@@ -1,0 +1,22 @@
+F:\Unitec\alg\Proy\BejeweledAnalisis\BejeweledAnalisis\bin\Debug\BejeweledAnalisis.exe.config
+F:\Unitec\alg\Proy\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.Resources.resources
+F:\Unitec\alg\Proy\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.vbproj.GenerateResource.Cache
+F:\Unitec\alg\Proy\BejeweledAnalisis\BejeweledAnalisis\bin\Debug\BejeweledAnalisis.exe
+F:\Unitec\alg\Proy\BejeweledAnalisis\BejeweledAnalisis\bin\Debug\BejeweledAnalisis.pdb
+F:\Unitec\alg\Proy\BejeweledAnalisis\BejeweledAnalisis\bin\Debug\BejeweledAnalisis.xml
+F:\Unitec\alg\Proy\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.exe
+F:\Unitec\alg\Proy\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.xml
+F:\Unitec\alg\Proy\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.pdb
+F:\Unitec\alg\Proy\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.frmMain.resources
+C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalisis\bin\Debug\BejeweledAnalisis.exe.config
+C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.exe
+C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.xml
+C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.pdb
+C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.frmMain.resources
+C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.Resources.resources
+C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.vbproj.GenerateResource.Cache
+C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalisis\bin\Debug\BejeweledAnalisis.exe
+C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalisis\bin\Debug\BejeweledAnalisis.pdb
+C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalisis\bin\Debug\BejeweledAnalisis.xml
+C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.vbprojResolveAssemblyReference.cache
+C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.frmUltimosMov.resources
