@@ -9,17 +9,18 @@ Public Class frmMain
         Dim posicionDestino As posicion
     End Structure
     Dim _Profundidad As Integer
+    Dim _puntaje As Integer = 100
     Public movimientos() As movimiento
     Public listaMovimientos As New List(Of movimiento)
-    Dim _colores As Integer = 7 ' entre 5 y 7
-    Dim mySleep As Integer = 0
+    Dim _colores As Integer = 5 ' entre 5 y 7
+    Dim mySleep As Integer = 25
     Public superficieDibujo As Bitmap
     Public disp As Graphics
     Public bmp As Bitmap
     Dim _filas As Integer = 25
-    Dim _columnas As Integer = 7
+    Dim _columnas As Integer = 4
 
-    Dim _filasV As Integer = 12
+    Dim _filasV As Integer = 7
     Dim _columnasV As Integer = _columnas
 
     Dim ruta1(10000) As movimiento
@@ -29,10 +30,60 @@ Public Class frmMain
     Dim _p1 As posicion
     Dim _p2 As posicion
     Dim _p3 As posicion
+
+    Dim Lastx As Integer = 34
+    Dim Lasty As Integer = 4
     '
     'Public tablero(_columnas, _filas) As tablero.figura
     Public tablero(_columnas, _filas) As Integer
+    Public tableroWork(_columnas, _filas) As Integer
+    Public tableroBack(_columnas, _filas) As Integer
     Public tableroPruebas(_columnas, _filas) As Integer
+    Private Sub tbToT()
+        Dim f As Integer
+        Dim c As Integer
+        For f = 0 To _filas
+            For c = 0 To _columnas
+                tablero(c, f) = tableroBack(c, f)
+            Next
+        Next
+    End Sub
+    Private Sub tToTB()
+        Dim f As Integer
+        Dim c As Integer
+        For f = 0 To _filas
+            For c = 0 To _columnas
+                tableroBack(c, f) = tablero(c, f)
+            Next
+        Next
+    End Sub
+    Private Sub tbToTw()
+        Dim f As Integer
+        Dim c As Integer
+        For f = 0 To _filas
+            For c = 0 To _columnas
+                tableroWork(c, f) = tableroBack(c, f)
+            Next
+        Next
+    End Sub
+    Private Sub tToTw()
+        Dim f As Integer
+        Dim c As Integer
+        For f = 0 To _filas
+            For c = 0 To _columnas
+                tableroWork(c, f) = tablero(c, f)
+            Next
+        Next
+    End Sub
+    Private Sub twToTp()
+        Dim f As Integer
+        Dim c As Integer
+        For f = 0 To _filas
+            For c = 0 To _columnas
+                tableroPruebas(c, f) = tableroWork(c, f)
+            Next
+        Next
+    End Sub
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If _filasV > _filas Then
             _filasV = _filas
@@ -152,6 +203,13 @@ Public Class frmMain
         t(p1.x, p1.y) = 0
         t(p2.x, p2.y) = 0
         t(p3.x, p3.y) = 0
+
+    End Sub
+    Public Sub tachaLineaTablero3(ByRef t As Integer(,), p1 As posicion, p2 As posicion, p3 As posicion)
+        t(p1.x, p1.y) = t(p1.x, p1.y) + 10
+        t(p2.x, p2.y) = t(p2.x, p2.y) + 10
+        t(p3.x, p3.y) = t(p3.x, p3.y) + 10
+
     End Sub
     Private Function existeLineaH(ByRef t As Integer(,)) As posicion
         Dim po As posicion
@@ -281,8 +339,8 @@ Public Class frmMain
         Dim resta As Integer = 135
         ScreenX = 0
         ScreenY = Me.Height - resta
-        For x = 0 To _columnasV - 1
-            For y = 0 To _filasV - 1
+        For x = 0 To _columnasV
+            For y = 0 To _filasV
                 bmp = recuperaImagen(t(x, y))
                 disp.DrawImage(bmp, ScreenX, ScreenY, 36, 36)
                 ScreenY = ScreenY - 36
@@ -295,7 +353,10 @@ Public Class frmMain
 
     Private Sub nuevoJuego()
         Dim siHayLinea As Boolean = False
-        llenaTablero(tablero)
+        Randomize()
+        llenaTablero(tableroBack)
+        tbToT()
+
         QuitaSeguidasH(tablero)
         QuitaSeguidasV(tablero)
         Do While siHayLinea
@@ -309,6 +370,7 @@ Public Class frmMain
         _pasos = 0
         _puntos = 0
         _movimientosCorrectos = 0
+        tToTB()
         dibujaTablero(tablero)
     End Sub
     Private Sub NuevoToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NuevoToolStripMenuItem.Click
@@ -399,8 +461,8 @@ Public Class frmMain
         Dim resta As Integer = 135
         ScreenX = 0
         ScreenY = Me.Height - resta
-        For x = 0 To _columnasV - 1
-            For y = 0 To _filasV - 1
+        For x = 0 To _columnasV
+            For y = 0 To _filasV
                 If (pa1.x = x And pa1.y = y) Or (pa2.x = x And pa2.y = y) Then
                     If pa1.x = x And pa1.y = y Then
                         pp1.x = ScreenX
@@ -459,8 +521,8 @@ Public Class frmMain
         Dim resta As Integer = 135
         ScreenX = 0
         ScreenY = Me.Height - resta
-        For x = 0 To _columnasV - 1
-            For y = 0 To _filasV - 1
+        For x = 0 To _columnasV
+            For y = 0 To _filasV
                 If (pa1.x = x And pa1.y = y) Or (pa2.x = x And pa2.y = y) Then
                     If pa1.x = x And pa1.y = y Then
                         pp1.x = ScreenX
@@ -510,25 +572,50 @@ Public Class frmMain
 
     Private Function GeneraPosicionPar(P As posicion) As posicion
         Dim pos As posicion
-        If P.x + 1 < _columnasV Then
-            pos.x = P.x + 1
-            pos.y = P.y
-            Return pos
-        End If
-        If P.y + 1 < _filasV Then
-            pos.x = P.x
-            pos.y = P.y + 1
-            Return pos
-        End If
-        If P.x - 1 > 0 Then
-            pos.x = P.x - 1
-            pos.y = P.y
-            Return pos
-        End If
-        If P.y - 1 > 0 Then
-            pos.x = P.x
-            pos.y = P.y - 1
-            Return pos
+        Dim ram As Integer = generaAleatoreo(1, 4)
+        If ram <= 2 Then
+            If P.x + 1 < _columnasV Then
+                pos.x = P.x + 1
+                pos.y = P.y
+                Return pos
+            End If
+            If P.y + 1 < _filasV Then
+                pos.x = P.x
+                pos.y = P.y + 1
+                Return pos
+            End If
+            If P.x - 1 > 0 Then
+                pos.x = P.x - 1
+                pos.y = P.y
+                Return pos
+            End If
+            If P.y - 1 > 0 Then
+                pos.x = P.x
+                pos.y = P.y - 1
+                Return pos
+            End If
+        Else
+            If P.y - 1 > 0 Then
+                pos.x = P.x
+                pos.y = P.y - 1
+                Return pos
+            End If
+            If P.x + 1 < _columnasV Then
+                pos.x = P.x + 1
+                pos.y = P.y
+                Return pos
+            End If
+
+            If P.x - 1 > 0 Then
+                pos.x = P.x - 1
+                pos.y = P.y
+                Return pos
+            End If
+            If P.y + 1 < _filasV Then
+                pos.x = P.x
+                pos.y = P.y + 1
+                Return pos
+            End If
         End If
     End Function
     Private Function GeneraPosicionRNd() As posicion
@@ -651,24 +738,146 @@ Public Class frmMain
         Dim hayLineas As Boolean = False
         Dim x As Integer
         Dim y As Integer
+        Dim xx As Integer
+        Dim yy As Integer
         Dim mov As movimiento
-        y = 0
-        x = 0
+        Dim rand As New Random
+        Dim azar As Integer
+        Randomize()
         Do
-            For x = 0 To _columnasV - 1
-                For y = 0 To _filasV - 1
-                    If t(x, y) = t(x, y + 1) Then
+            yy = rand.Next(0, _filasV - 3)
+            ' y = generaAleatoreo(0, _filasV)
+            xx = generaAleatoreo(0, _columnasV - 3)
+        Loop While xx = Lastx And Lasty = yy
+        Lastx = xx
+        Lasty = yy
+        mov.posicionOrigen.x = 2
+        mov.posicionOrigen.y = 2
+
+        mov.posicionDestino.x = 2
+        mov.posicionDestino.y = 1
+        'MsgBox("x:" + x.ToString + " y: " + y.ToString)
+        Do
+            For x = xx To _columnasV - 2
+                For y = yy To _filasV - 2
+
+                    '''''''''''''''''''''''''''''''''''''''''''1
+                    If (y >= 1 And x > 1) AndAlso t(x, y) = t(x, y - 1) Then
+                        azar = generaAleatoreo(1, 3)
                         mov.posicionOrigen.x = x
-                        mov.posicionOrigen.y = y
-                        mov.posicionDestino.x = x
-                        mov.posicionDestino.y = y + 1
+                        mov.posicionOrigen.y = y + 1
+                        If azar = 1 Then
+                            mov.posicionDestino.x = x
+                            mov.posicionDestino.y = y + 2
+                        End If
+                        If azar = 2 Then
+                            mov.posicionDestino.x = x - 1
+                            mov.posicionDestino.y = y + 1
+                        End If
+                        If azar = 3 Then
+                            mov.posicionDestino.x = x + 1
+                            mov.posicionDestino.y = y + 1
+                        End If
                         Return mov
                     End If
-                    If t(x, y) = t(x + 1, y) Then
+                    If (x > 1) AndAlso t(x, y) = t(x, y + 2) Then ''2
+                        azar = generaAleatoreo(1, 3)
                         mov.posicionOrigen.x = x
+                        mov.posicionOrigen.y = y + 1
+                        If azar = 1 Then
+                            mov.posicionDestino.x = x
+                            mov.posicionDestino.y = y
+                        End If
+                        If azar = 2 Then
+                            mov.posicionDestino.x = x - 1
+                            mov.posicionDestino.y = y + 1
+                        End If
+                        If azar = 3 Then
+                            mov.posicionDestino.x = x + 1
+                            mov.posicionDestino.y = y + 1
+                        End If
+                        Return mov
+
+                    End If
+                    ''''''''''''''''''''''''''''''''3
+
+                    If (x > 1) AndAlso t(x, y) = t(x, y + 1) Then
+                        mov.posicionOrigen.x = x
+                        mov.posicionOrigen.y = y + 2
+                        azar = generaAleatoreo(1, 3)
+
+                        If azar = 1 Then
+                            mov.posicionDestino.x = x
+                            mov.posicionDestino.y = y + 3
+                        End If
+                        If azar = 2 Then
+                            mov.posicionDestino.x = x - 1
+                            mov.posicionDestino.y = y + 2
+                        End If
+                        If azar = 3 Then
+                            mov.posicionDestino.x = x + 1
+                            mov.posicionDestino.y = y + 2
+                        End If
+                        Return mov
+
+                        Return mov
+                    End If
+                    ''''''''''''''''''''''''''''''''''''''''''''4
+                    If (x <= _columnasV - 2 And y > 1) AndAlso t(x, y) = t(x + 1, y) Then
+                        azar = generaAleatoreo(1, 3)
+                        mov.posicionOrigen.x = x + 2
                         mov.posicionOrigen.y = y
-                        mov.posicionDestino.x = x + 1
-                        mov.posicionDestino.y = y
+                        If azar = 1 Then
+                            mov.posicionDestino.x = x + 3
+                            mov.posicionDestino.y = y
+                        End If
+                        If azar = 2 Then
+                            mov.posicionDestino.x = x + 2
+                            mov.posicionDestino.y = y + 1
+                        End If
+                        If azar = 3 Then
+                            mov.posicionDestino.x = x + 2
+                            mov.posicionDestino.y = y - 1
+                        End If
+                        Return mov
+                    End If
+                    '''''''''''''''''''''''''''''''''''''5
+                    If (x <= _columnasV - 2 And y > 1) AndAlso t(x + 2, y) = t(x, y) Then
+                        azar = generaAleatoreo(1, 3)
+                        mov.posicionOrigen.x = x + 1
+                        mov.posicionOrigen.y = y
+                        If azar = 1 Then
+                            mov.posicionDestino.x = x + 2
+                            mov.posicionDestino.y = y
+                        End If
+                        If azar = 2 Then
+                            mov.posicionDestino.x = x + 1
+                            mov.posicionDestino.y = y + 1
+                        End If
+                        If azar = 3 Then
+                            mov.posicionDestino.x = x + 1
+                            mov.posicionDestino.y = y - 1
+                        End If
+                        Return mov
+                    End If
+
+                    If (x > 1 And y > 1) AndAlso t(x - 1, y) = t(x, y) Then ''6
+                        azar = generaAleatoreo(1, 3)
+                        mov.posicionOrigen.x = x + 1
+                        mov.posicionOrigen.y = y
+                        If azar = 1 Then
+                            mov.posicionDestino.x = x + 2
+                            mov.posicionDestino.y = y
+                        End If
+                        If azar = 2 Then
+                            mov.posicionDestino.x = x + 1
+                            mov.posicionDestino.y = y + 1
+                        End If
+                        If azar = 3 Then
+                            mov.posicionDestino.x = x + 1
+                            mov.posicionDestino.y = y - 1
+                        End If
+                        Return mov
                         Return mov
                     End If
                 Next
@@ -690,25 +899,34 @@ Public Class frmMain
     End Function
 
 
-    Private Function buscaMejordelTablero2(ByVal t3 As Integer(,)) As movimiento
+    Private Function buscaMejordelTablero2(ByRef tt As Integer(,)) As movimiento
         Dim mejorMovimiento As movimiento
         Dim puntaje As Integer = 0
         Dim mejorPuntaje As Integer = 0
         Dim x As Integer
         Dim y As Integer
         Dim mov As movimiento
-        Dim tt As Integer(,)
-        tt = t3
+        Dim xx As Integer
+        Dim yy As Integer
+ 
         '   mov = buscaPar(tt)
         '  On Error Resume Next
+        Randomize()
+        'Do
+        '    yy = generaAleatoreo(0, _filasV - 1)
+        '    xx = generaAleatoreo(0, _columnasV - 1)
+        'Loop While xx = Lastx And Lasty = yy
+        Lastx = xx
+        Lasty = yy
         For x = 0 To _columnasV - 1
             For y = 0 To _filasV - 1
-                tt = t3
+
                 mov.posicionOrigen.x = x
                 mov.posicionOrigen.y = y
                 mov.posicionDestino.x = x
                 mov.posicionDestino.y = y + 1
-                puntaje = calculaPuntosMovimiento(tt, mov)
+                twToTp()
+                puntaje = calculaPuntosMovimiento(mov)
                 If puntaje > mejorPuntaje Then
                     mejorPuntaje = puntaje
                     mejorMovimiento = mov
@@ -718,7 +936,8 @@ Public Class frmMain
                 mov.posicionOrigen.y = y
                 mov.posicionDestino.x = x + 1
                 mov.posicionDestino.y = y
-                puntaje = calculaPuntosMovimiento(tt, mov)
+                twToTp()
+                puntaje = calculaPuntosMovimiento(mov)
                 If puntaje > mejorPuntaje Then
                     mejorPuntaje = puntaje
                     mejorMovimiento = mov
@@ -726,121 +945,115 @@ Public Class frmMain
 
             Next
         Next
-        'msgbox("El mejor movimiento generara : " + mejorPuntaje.ToString + " puntos en (" + mov.posicionOrigen.x.ToString + "," + mov.posicionOrigen.y.ToString)
+        'MsgBox("El mejor movimiento generara : " + mejorPuntaje.ToString + " puntos. En (" + mejorMovimiento.posicionOrigen.x.ToString + "," + mejorMovimiento.posicionOrigen.y.ToString + ") (" + mejorMovimiento.posicionDestino.x.ToString + "," + mejorMovimiento.posicionDestino.y.ToString + ")")
         Return mejorMovimiento
     End Function
-    Private Function buscaMejordelTablero(ByVal t As Integer(,)) As movimiento
-        Dim mejorMovimiento As movimiento
-        Dim puntaje As Integer = 0
-        Dim mejorPuntaje As Integer = 0
-        Dim x As Integer
-        Dim y As Integer
-        Dim mov As movimiento
-        mov = buscaPar(t)
+    'Private Function buscaMejordelTablero(ByVal t As Integer(,)) As movimiento
+    '    Dim mejorMovimiento As movimiento
+    '    Dim puntaje As Integer = 0
+    '    Dim mejorPuntaje As Integer = 0
+    '    Dim x As Integer
+    '    Dim y As Integer
+    '    Dim mov As movimiento
+    '    mov = buscaPar(t)
 
-        For x = 0 To _columnasV - 1
-            For y = 0 To _filasV - 1
-                If t(x, y) = t(x, y + 1) Then
-                    mov.posicionOrigen.x = x
-                    mov.posicionOrigen.y = y
-                    mov.posicionDestino.x = x
-                    mov.posicionDestino.y = y + 1
-                    puntaje = calculaPuntosMovimiento(t, mov)
-                    If puntaje > mejorPuntaje Then
-                        mejorPuntaje = puntaje
-                        mejorMovimiento = mov
-                    End If
-                End If
-                If (y >= 1) AndAlso t(x, y) = t(x, y - 1) Then
-                    mov.posicionOrigen.x = x
-                    mov.posicionOrigen.y = y
-                    mov.posicionDestino.x = x
-                    mov.posicionDestino.y = y - 1
-                    puntaje = calculaPuntosMovimiento(t, mov)
-                    If puntaje > mejorPuntaje Then
-                        mejorPuntaje = puntaje
-                        mejorMovimiento = mov
-                    End If
-                End If
-                If t(x, y) = t(x, y + 2) Then
-                    mov.posicionOrigen.x = x
-                    mov.posicionOrigen.y = y
-                    mov.posicionDestino.x = x
-                    mov.posicionDestino.y = y + 1
-                    puntaje = calculaPuntosMovimiento(t, mov)
-                    If puntaje > mejorPuntaje Then
-                        mejorPuntaje = puntaje
-                        mejorMovimiento = mov
-                    End If
-                End If
-                If t(x, y) = t(x, y + 2) Then
-                    mov.posicionOrigen.x = x
-                    mov.posicionOrigen.y = y + 1
-                    mov.posicionDestino.x = x
-                    mov.posicionDestino.y = y + 2
-                    puntaje = calculaPuntosMovimiento(t, mov)
-                    If puntaje > mejorPuntaje Then
-                        mejorPuntaje = puntaje
-                        mejorMovimiento = mov
-                    End If
-                End If
-                If t(x, y) = t(x + 1, y) Then
-                    mov.posicionOrigen.x = x
-                    mov.posicionOrigen.y = y
-                    mov.posicionDestino.x = x + 1
-                    mov.posicionDestino.y = y
-                    puntaje = calculaPuntosMovimiento(t, mov)
-                    If puntaje > mejorPuntaje Then
-                        mejorPuntaje = puntaje
-                        mejorMovimiento = mov
-                    End If
-                End If
+    '    For x = 0 To _columnasV - 1
+    '        For y = 0 To _filasV - 1
+    '            If t(x, y) = t(x, y + 1) Then
+    '                mov.posicionOrigen.x = x
+    '                mov.posicionOrigen.y = y
+    '                mov.posicionDestino.x = x
+    '                mov.posicionDestino.y = y + 1
+    '                puntaje = calculaPuntosMovimiento(t, mov)
+    '                If puntaje > mejorPuntaje Then
+    '                    mejorPuntaje = puntaje
+    '                    mejorMovimiento = mov
+    '                End If
+    '            End If
+    '            If (y >= 1) AndAlso t(x, y) = t(x, y - 1) Then
+    '                mov.posicionOrigen.x = x
+    '                mov.posicionOrigen.y = y
+    '                mov.posicionDestino.x = x
+    '                mov.posicionDestino.y = y - 1
+    '                puntaje = calculaPuntosMovimiento(t, mov)
+    '                If puntaje > mejorPuntaje Then
+    '                    mejorPuntaje = puntaje
+    '                    mejorMovimiento = mov
+    '                End If
+    '            End If
+    '            If t(x, y) = t(x, y + 2) Then
+    '                mov.posicionOrigen.x = x
+    '                mov.posicionOrigen.y = y
+    '                mov.posicionDestino.x = x
+    '                mov.posicionDestino.y = y + 1
+    '                puntaje = calculaPuntosMovimiento(t, mov)
+    '                If puntaje > mejorPuntaje Then
+    '                    mejorPuntaje = puntaje
+    '                    mejorMovimiento = mov
+    '                End If
+    '            End If
+    '            If t(x, y) = t(x, y + 2) Then
+    '                mov.posicionOrigen.x = x
+    '                mov.posicionOrigen.y = y + 1
+    '                mov.posicionDestino.x = x
+    '                mov.posicionDestino.y = y + 2
+    '                puntaje = calculaPuntosMovimiento(t, mov)
+    '                If puntaje > mejorPuntaje Then
+    '                    mejorPuntaje = puntaje
+    '                    mejorMovimiento = mov
+    '                End If
+    '            End If
+    '            If t(x, y) = t(x + 1, y) Then
+    '                mov.posicionOrigen.x = x
+    '                mov.posicionOrigen.y = y
+    '                mov.posicionDestino.x = x + 1
+    '                mov.posicionDestino.y = y
+    '                puntaje = calculaPuntosMovimiento(t, mov)
+    '                If puntaje > mejorPuntaje Then
+    '                    mejorPuntaje = puntaje
+    '                    mejorMovimiento = mov
+    '                End If
+    '            End If
 
-                If (x >= 1) AndAlso t(x, y) = t(x - 1, y) Then
-                    mov.posicionOrigen.x = x
-                    mov.posicionOrigen.y = y
-                    mov.posicionDestino.x = x - 1
-                    mov.posicionDestino.y = y
-                    puntaje = calculaPuntosMovimiento(t, mov)
-                    If puntaje > mejorPuntaje Then
-                        mejorPuntaje = puntaje
-                        mejorMovimiento = mov
-                    End If
-                End If
-            Next
-        Next
-        ' MsgBox("El mejor movimiento generara : " + mejorPuntaje.ToString + " puntos")
-        Return mejorMovimiento
-    End Function
-    Private Function calculaPuntosMovimiento(ByVal t2 As Integer(,), m As movimiento) As Integer
-        Dim tt As Integer(,)
-        tt = t2
+    '            If (x >= 1) AndAlso t(x, y) = t(x - 1, y) Then
+    '                mov.posicionOrigen.x = x
+    '                mov.posicionOrigen.y = y
+    '                mov.posicionDestino.x = x - 1
+    '                mov.posicionDestino.y = y
+    '                puntaje = calculaPuntosMovimiento(t, mov)
+    '                If puntaje > mejorPuntaje Then
+    '                    mejorPuntaje = puntaje
+    '                    mejorMovimiento = mov
+    '                End If
+    '            End If
+    '        Next
+    '    Next
+    '    ' MsgBox("El mejor movimiento generara : " + mejorPuntaje.ToString + " puntos")
+    '    Return mejorMovimiento
+    'End Function
+    Private Function calculaPuntosMovimiento(m1 As movimiento) As Integer
+
         Dim puntosCambio = 0
         Dim jugando As Boolean = True
         Dim hayLineas As Boolean = False
         Dim p1, p2 As posicion
         Dim mov As New movimiento
         Dim _movimientosCorrecto As Integer = 0
-        p1.x = m.posicionOrigen.x
-        p1.y = m.posicionOrigen.y
-        p2.x = m.posicionDestino.x
-        p2.y = m.posicionDestino.y
+        p1.x = m1.posicionOrigen.x
+        p1.y = m1.posicionOrigen.y
+        p2.x = m1.posicionDestino.x
+        p2.y = m1.posicionDestino.y
         swapArreglo(tableroPruebas, p1, p2)
         Do While jugando
 
             If buscaSiExisteLinea(tableroPruebas) Then
 
                 hayLineas = True
-                dibujaTablero(tableroPruebas)
+                'dibujaTablero(tableroPruebas)
                 borraLineaTablero3(tableroPruebas, _p1, _p2, _p3)
                 bajaColumnas(tableroPruebas, _p1.x)
                 bajaColumnas(tableroPruebas, _p2.x)
                 bajaColumnas(tableroPruebas, _p3.x)
-                dibujaTablero(tableroPruebas)
-                If chkAnimacion.Checked = True Then
-                    dibujaTablero(tableroPruebas)
-                End If
-
                 puntosCambio = puntosCambio + 5
 
                 jugando = True
@@ -852,18 +1065,29 @@ Public Class frmMain
 
         Loop
         ' swapArreglo(tableroPruebas, p1, p2)
-        _puntos = _puntos + puntosCambio
-        Label2.Text = "Puntos: " + _puntos.ToString
+        '  _puntos = _puntos + puntosCambio
+        ' Label2.Text = "Puntos: " + _puntos.ToString
         ' MsgBox("Este cambio genera : " + puntosCambio.ToString + " puntos")
         Return puntosCambio
     End Function
     Private Sub cmdAnalisis_Click(sender As Object, e As EventArgs) Handles cmdAnalisis.Click
-        creaRuta(tablero)
+        'tablero = tableroBack
+        listaMovimientos.Clear()
+        tbToT()
+        dibujaTablero(tablero)
+        creaRuta2(tablero)
     End Sub
-    Sub creaRuta(ByVal trx As Integer(,))
+    Private Sub cmdAnalisis3_Click(sender As Object, e As EventArgs) Handles cmdAnalisis3.Click
+        'tablero = tableroBack
+
+        listaMovimientos.Clear()
+        tbToT()
+        creaRuta33(tablero)
+    End Sub
+    Sub creaRutaX(ByVal trx As Integer(,))
         Dim i As Integer = 0
         Dim _lpuntos As Integer = 0
-        tableroPruebas = tablero
+
         Dim movio As Boolean = False
         Dim _moves As New List(Of movimiento)
         Dim jugando As Boolean = True
@@ -886,7 +1110,7 @@ Public Class frmMain
                 bajaColumnas(tablero, _p2.x)
                 bajaColumnas(tablero, _p3.x)
                 Application.DoEvents()
-                Threading.Thread.Sleep(150)
+                Threading.Thread.Sleep(mySleep)
                 If chkAnimacion.Checked = True Then
                     dibujaTablero(tablero)
                 End If
@@ -916,9 +1140,307 @@ Public Class frmMain
 
 
     End Sub
-    Sub creaRutaRandom(ByVal t As Integer(,))
+    Sub creaRuta2(ByRef t As Integer(,))
         _pasos = 0
         _puntos = 0
+        Label1.Text = "Pasos :" + _pasos.ToString
+        Label2.Text = "Puntos: " + _puntos.ToString
+        Dim jugando As Boolean = True
+        Dim hayLineas As Boolean = False
+        Dim p1, p2 As posicion
+        Dim mov As New movimiento
+        Randomize()
+        Do While jugando
+            Application.DoEvents()
+            'busca posicion
+            Do
+                mov = buscaPar(tablero)
+                p1.x = mov.posicionOrigen.x
+                p1.y = mov.posicionOrigen.y
+
+                p2.x = mov.posicionDestino.x
+                p2.y = mov.posicionDestino.y
+            Loop While tablero(p1.x, p1.y) = 0 Or tablero(p2.x, p2.y) = 0
+            'ciclo
+            swap(tablero, p1, p2)
+            hayLineas = buscaSiExisteLinea(tablero)
+            mov.posicionOrigen = p1
+            mov.posicionDestino = p2
+            listaMovimientos.Add(mov)
+            Do While hayLineas
+                tachaLineaTablero3(tablero, _p1, _p2, _p3)
+
+                If chkAnimacion.Checked = True Then
+                    dibujaTablero(tablero)
+                End If
+                Application.DoEvents()
+                Threading.Thread.Sleep(700)
+                borraLineaTablero3(tablero, _p1, _p2, _p3)
+                bajaColumnas(tablero, _p1.x)
+                bajaColumnas(tablero, _p2.x)
+                bajaColumnas(tablero, _p3.x)
+                Application.DoEvents()
+                Threading.Thread.Sleep(mySleep)
+                If chkAnimacion.Checked = True Then
+                    dibujaTablero(tablero)
+                End If
+                _movimientosCorrectos = _movimientosCorrectos + 1
+                _puntos = _puntos + 5
+                hayLineas = buscaSiExisteLinea(tablero)
+
+            Loop
+            ' quita lineas
+            'fin ciclo
+
+            _pasos = _pasos + 1
+            If _pasos > 1500 Then
+                jugando = False
+            End If
+            If _puntos >= _puntaje Then
+                jugando = False
+                dibujaTablero(tablero)
+                MsgBox("Logro el objetivo en :" + _pasos.ToString + " Movimientos")
+            End If
+
+            Label1.Text = "Pasos :" + _pasos.ToString
+            Label2.Text = "Puntos: " + _puntos.ToString
+        Loop
+    
+
+
+
+    End Sub
+    Sub creaRuta3(ByRef tz As Integer(,))
+        _pasos = 0
+        _puntos = 0
+        Label1.Text = "Pasos :" + _pasos.ToString
+        Label2.Text = "Puntos: " + _puntos.ToString
+        Dim jugando As Boolean = True
+        Dim hayLineas As Boolean = False
+        Dim p1, p2 As posicion
+        Dim mov As New movimiento
+        Randomize()
+        Do While jugando
+            Application.DoEvents()
+            'Threading.Thread.Sleep(generaAleatoreo(10, 150))
+
+            Do
+                tToTw()
+                mov = buscaMejordelTablero2(tableroWork)
+                p1.x = mov.posicionOrigen.x
+                p1.y = mov.posicionOrigen.y
+
+                p2.x = mov.posicionDestino.x
+                p2.y = mov.posicionDestino.y
+            Loop While tableroWork(p1.x, p1.y) = 0 Or tableroWork(p2.x, p2.y) = 0
+
+            If Not hayLineas Then
+                swap(tablero, p1, p2)
+                If buscaSiExisteLinea(tablero) Then
+                    hayLineas = True
+                    borraLineaTablero3(tablero, _p1, _p2, _p3)
+                    bajaColumnas(tablero, _p1.x)
+                    bajaColumnas(tablero, _p2.x)
+                    bajaColumnas(tablero, _p3.x)
+                    Application.DoEvents()
+                    Threading.Thread.Sleep(mySleep)
+                    If chkAnimacion.Checked = True Then
+                        dibujaTablero(tablero)
+                    End If
+                    _movimientosCorrectos = _movimientosCorrectos + 1
+                    _puntos = _puntos + 5
+                    mov.posicionOrigen = p1
+                    mov.posicionDestino = p2
+                    listaMovimientos.Add(mov)
+                Else
+                    swap(tablero, p1, p2)
+                End If
+                mov.posicionOrigen = p1
+                mov.posicionDestino = p2
+                listaMovimientos.Add(mov)
+                '  MsgBox("Normal")
+            Else
+                ' MsgBox("Aun queda otra")
+                If buscaSiExisteLinea(tablero) Then
+                    hayLineas = True
+                Else
+                    hayLineas = False
+                End If
+                borraLineaTablero3(tablero, _p1, _p2, _p3)
+                bajaColumnas(tablero, _p1.x)
+                bajaColumnas(tablero, _p2.x)
+                bajaColumnas(tablero, _p3.x)
+                _puntos = _puntos + 5
+                Application.DoEvents()
+                Threading.Thread.Sleep(mySleep)
+                If chkAnimacion.Checked = True Then
+                    dibujaTablero(tablero)
+                End If
+            End If
+            _pasos = _pasos + 1
+            If _pasos > 1500 Then
+                jugando = False
+            End If
+            If _puntos >= _puntaje Then
+                jugando = False
+                dibujaTablero(tablero)
+                MsgBox("Logro el objetivo en :" + _pasos.ToString + " Movimientos")
+            End If
+
+            Label1.Text = "Pasos :" + _pasos.ToString
+            Label2.Text = "Puntos: " + _puntos.ToString
+        Loop
+
+
+    End Sub
+    Sub creaRuta33(ByRef tz As Integer(,))
+        _pasos = 0
+        _puntos = 0
+        Label1.Text = "Pasos :" + _pasos.ToString
+        Label2.Text = "Puntos: " + _puntos.ToString
+        Dim jugando As Boolean = True
+        Dim hayLineas As Boolean = False
+        Dim p1, p2 As posicion
+        Dim mov As New movimiento
+        Randomize()
+        Do While jugando
+            Application.DoEvents()
+            'busca posicion
+            Do
+                tToTw()
+                mov = buscaMejordelTablero2(tableroWork)
+                p1.x = mov.posicionOrigen.x
+                p1.y = mov.posicionOrigen.y
+
+                p2.x = mov.posicionDestino.x
+                p2.y = mov.posicionDestino.y
+            Loop While tableroWork(p1.x, p1.y) = 0 Or tableroWork(p2.x, p2.y) = 0
+            'ciclo
+            swap(tablero, p1, p2)
+            hayLineas = buscaSiExisteLinea(tablero)
+            mov.posicionOrigen = p1
+            mov.posicionDestino = p2
+            listaMovimientos.Add(mov)
+            Do
+                tachaLineaTablero3(tablero, _p1, _p2, _p3)
+
+                If chkAnimacion.Checked = True Then
+                    dibujaTablero(tablero)
+                End If
+                Application.DoEvents()
+                Threading.Thread.Sleep(700)
+                borraLineaTablero3(tablero, _p1, _p2, _p3)
+                bajaColumnas(tablero, _p1.x)
+                bajaColumnas(tablero, _p2.x)
+                bajaColumnas(tablero, _p3.x)
+                Application.DoEvents()
+                Threading.Thread.Sleep(mySleep)
+                If chkAnimacion.Checked = True Then
+                    dibujaTablero(tablero)
+                End If
+                    _movimientosCorrectos = _movimientosCorrectos + 1
+                    _puntos = _puntos + 5
+
+
+
+                hayLineas = buscaSiExisteLinea(tablero)
+
+            Loop While hayLineas
+            ' quita lineas
+            'fin ciclo
+  
+            _pasos = _pasos + 1
+            If _pasos > 1500 Then
+                jugando = False
+            End If
+            If _puntos >= _puntaje Then
+                jugando = False
+                dibujaTablero(tablero)
+                MsgBox("Logro el objetivo en :" + _pasos.ToString + " Movimientos")
+            End If
+
+            Label1.Text = "Pasos :" + _pasos.ToString
+            Label2.Text = "Puntos: " + _puntos.ToString
+        Loop
+
+
+    End Sub
+    Sub creaRutaRandom2(ByRef tM As Integer(,))
+        _pasos = 0
+        _puntos = 0
+        Label1.Text = "Pasos :" + _pasos.ToString
+        Label2.Text = "Puntos: " + _puntos.ToString
+        Dim jugando As Boolean = True
+        Dim hayLineas As Boolean = False
+        Dim p1, p2 As posicion
+        Dim mov As New movimiento
+        Randomize()
+        tbToT()
+
+        Do While jugando
+            Application.DoEvents()
+            'busca posicion
+            Do
+                p1 = GeneraPosicionRNd()
+                p2 = GeneraPosicionPar(p1)
+            Loop While tablero(p1.x, p1.y) = 0 Or tablero(p2.x, p2.y) = 0
+
+            'ciclo
+            swap(tablero, p1, p2)
+            hayLineas = buscaSiExisteLinea(tablero)
+            mov.posicionOrigen = p1
+            mov.posicionDestino = p2
+            listaMovimientos.Add(mov)
+            If Not hayLineas Then
+                swap(tablero, p1, p2)
+            End If
+            Do While hayLineas
+                tachaLineaTablero3(tablero, _p1, _p2, _p3)
+
+                If chkAnimacion.Checked = True Then
+                    dibujaTablero(tablero)
+                End If
+                Application.DoEvents()
+                Threading.Thread.Sleep(700)
+                borraLineaTablero3(tablero, _p1, _p2, _p3)
+                bajaColumnas(tablero, _p1.x)
+                bajaColumnas(tablero, _p2.x)
+                bajaColumnas(tablero, _p3.x)
+                Application.DoEvents()
+                Threading.Thread.Sleep(mySleep)
+                If chkAnimacion.Checked = True Then
+                    dibujaTablero(tablero)
+                End If
+                _movimientosCorrectos = _movimientosCorrectos + 1
+                _puntos = _puntos + 5
+                hayLineas = buscaSiExisteLinea(tablero)
+
+            Loop
+            ' quita lineas
+            'fin ciclo
+
+            _pasos = _pasos + 1
+            If _pasos > 1500 Then
+                jugando = False
+            End If
+            If _puntos >= _puntaje Then
+                jugando = False
+                dibujaTablero(tablero)
+                MsgBox("Logro el objetivo en :" + _pasos.ToString + " Movimientos")
+            End If
+
+            Label1.Text = "Pasos :" + _pasos.ToString
+            Label2.Text = "Puntos: " + _puntos.ToString
+        Loop
+
+
+    End Sub
+    Sub creaRutaRandom(ByRef t As Integer(,))
+        Randomize()
+        _pasos = 0
+        _puntos = 0
+        Label1.Text = "Pasos :" + _pasos.ToString
+        Label2.Text = "Puntos: " + _puntos.ToString
         Dim jugando As Boolean = True
         Dim hayLineas As Boolean = False
         Dim p1, p2 As posicion
@@ -938,7 +1460,7 @@ Public Class frmMain
                     bajaColumnas(t, _p2.x)
                     bajaColumnas(t, _p3.x)
                     Application.DoEvents()
-                    Threading.Thread.Sleep(150)
+                    Threading.Thread.Sleep(mySleep)
                     If chkAnimacion.Checked = True Then
                         dibujaTablero(t)
                     End If
@@ -965,8 +1487,9 @@ Public Class frmMain
                 bajaColumnas(t, _p1.x)
                 bajaColumnas(t, _p2.x)
                 bajaColumnas(t, _p3.x)
+                _puntos = _puntos + 5
                 Application.DoEvents()
-                Threading.Thread.Sleep(150)
+                Threading.Thread.Sleep(mySleep)
                 If chkAnimacion.Checked = True Then
                     dibujaTablero(t)
                 End If
@@ -975,7 +1498,7 @@ Public Class frmMain
             If _pasos > 1500 Then
                 jugando = False
             End If
-            If _puntos >= 100 Then
+            If _puntos >= _puntaje Then
                 jugando = False
                 dibujaTablero(t)
                 MsgBox("Logro el objetivo en :" + _pasos.ToString + " Movimientos")
@@ -991,7 +1514,10 @@ Public Class frmMain
         frmUltimosMov.Show()
     End Sub
     Private Sub cmdIntellRandom_Click(sender As Object, e As EventArgs) Handles cmdIntellRandom.Click
-        creaRutaRandom(tablero)
+        'tablero = tableroBack
+        listaMovimientos.Clear()
+        tbToT()
+        creaRutaRandom2(tablero)
 
     End Sub
 
@@ -1004,7 +1530,7 @@ Public Class frmMain
         m.posicionDestino.x = Integer.Parse(TextBox3.Text)
         m.posicionDestino.y = Integer.Parse(TextBox4.Text)
 
-        calculaPuntosMovimiento(tablero, m)
+        calculaPuntosMovimiento(m)
     End Sub
 
     Private Sub PictureBox1_Click(sender As Object, e As EventArgs) Handles PictureBox1.Click
@@ -1014,6 +1540,7 @@ Public Class frmMain
     Private Sub VerMovimientosToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles VerMovimientosToolStripMenuItem.Click
         verUltimosMovimientos()
     End Sub
+
 
 
 
