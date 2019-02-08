@@ -1,6 +1,6 @@
 ﻿Imports System.Threading
 Public Class frmMain
-    'hola
+    'hola marco
     Structure posicion
         Dim x As Integer
         Dim y As Integer
