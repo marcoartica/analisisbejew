@@ -1,5 +1,6 @@
 ﻿Imports System.Threading
 Public Class frmMain
+    'hola
     Structure posicion
         Dim x As Integer
         Dim y As Integer
@@ -33,7 +34,7 @@ Public Class frmMain
 
     Dim Lastx As Integer = 34
     Dim Lasty As Integer = 4
-    '
+    
     'Public tablero(_columnas, _filas) As tablero.figura
     Public tablero(_columnas, _filas) As Integer
     Public tableroWork(_columnas, _filas) As Integer

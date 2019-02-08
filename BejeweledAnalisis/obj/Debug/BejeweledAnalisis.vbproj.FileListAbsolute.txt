@@ -20,3 +20,16 @@ C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalis
 C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalisis\bin\Debug\BejeweledAnalisis.xml
 C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.vbprojResolveAssemblyReference.cache
 C:\Users\Marco Artica\Dropbox\Unitec\_analisis\BejeweledAnalisis\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.frmUltimosMov.resources
+D:\Mis Documentos\GitHub\analisisbejewell\BejeweledAnalisis\bin\Debug\BejeweledAnalisis.exe.config
+D:\Mis Documentos\GitHub\analisisbejewell\BejeweledAnalisis\bin\Debug\BejeweledAnalisis.exe
+D:\Mis Documentos\GitHub\analisisbejewell\BejeweledAnalisis\bin\Debug\BejeweledAnalisis.pdb
+D:\Mis Documentos\GitHub\analisisbejewell\BejeweledAnalisis\bin\Debug\BejeweledAnalisis.xml
+D:\Mis Documentos\GitHub\analisisbejewell\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.vbprojAssemblyReference.cache
+D:\Mis Documentos\GitHub\analisisbejewell\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.frmUltimosMov.resources
+D:\Mis Documentos\GitHub\analisisbejewell\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.frmMain.resources
+D:\Mis Documentos\GitHub\analisisbejewell\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.Resources.resources
+D:\Mis Documentos\GitHub\analisisbejewell\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.vbproj.GenerateResource.cache
+D:\Mis Documentos\GitHub\analisisbejewell\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.vbproj.CoreCompileInputs.cache
+D:\Mis Documentos\GitHub\analisisbejewell\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.exe
+D:\Mis Documentos\GitHub\analisisbejewell\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.xml
+D:\Mis Documentos\GitHub\analisisbejewell\BejeweledAnalisis\obj\Debug\BejeweledAnalisis.pdb
